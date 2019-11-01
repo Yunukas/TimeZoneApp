@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +10,7 @@ namespace TimeIsMoney
     public static class Utility
     {
         // Nist server connection information
-        static readonly List<string> nistServerList = new List<string>()
+        public static readonly List<string> nistServerList = new List<string>()
         {
             "time-a-g.nist.gov",
             "time-b-g.nist.gov",
@@ -23,14 +21,16 @@ namespace TimeIsMoney
 
         // this is the index pointing to the current server
         // in the nistServerList
-        static int serverIndex = 0;
+        private static int serverIndex = 0;
 
         // port we will use for connection to nist server
-        const int port = 13;
+        private const int port = 13;
 
         // the date time format received from Nist server
         internal const string dateTimeFormatOfNist = "yy-MM-dd HH:mm:ss";
         internal const string customDateTimeFormat = "MM/dd/yyyy   hh:mm:ss tt";
+
+        // this method returns a TCP client connection to a given server at a given port
         private static async Task<TcpClient> GetTcpClient(string server, int port)
         {
             var client = new TcpClient();
@@ -46,14 +46,17 @@ namespace TimeIsMoney
             return client;
         }
 
+        // this method returns the datetime in string format from a time server
         public static async Task<string> GetUTCTimeStringAsync()
         {
+            // get the TCP client asyncronously
             var client = await GetTcpClient(nistServerList[serverIndex], port);
         
             using (var stream = client.GetStream())
             using (var ms = new MemoryStream())
             {
-                int BufferSize = client.ReceiveBufferSize;
+                // Set buffer size to 4K
+                int BufferSize = 4096;
                 var buffer = new byte[BufferSize];
                 int read = 0;
 
@@ -74,33 +77,23 @@ namespace TimeIsMoney
                     // received text is in below format:
                     // 58788 19-11-01 00:37:14 03 0 0 487.0 UTC(NIST) *
                     var utcDateTimeString = response.Substring(7, 17);
-                    // convert the time string to DateTime
-                    //DateTime utcTime = DateTime.ParseExact(
-                    //                            utcDateTimeString,
-                    //                            dateTimeFormatOfNist,
-                    //                            CultureInfo.CreateSpecificCulture("en-US"));
-
-                    //// calculate the time in current time zone
-                    //currentTimeZoneTime = DateTime.ParseExact(
-                    //                                        utcDateTimeString,
-                    //                                        dateTimeFormatOfNist,
-                    //                                        CultureInfo.InvariantCulture,
-                    //                                        DateTimeStyles.AssumeUniversal);
-
+                    
                     return utcDateTimeString;
                 }
                 else
                 {
-                    throw new NoResponseException("No response was received from the server!");
+                    throw new NoResponseException("Empty response from the server!");
                 }
             }
             
         }
-
+        // this method is called after and error
+        // it updates the server index, so the next server is polled
         public static void UpdateServerIndex() {
             serverIndex = (serverIndex + 1) % nistServerList.Count;
         }
 
+        // this method returns the current server
         public static string GetCurrentServer()
         {
             return nistServerList[serverIndex];

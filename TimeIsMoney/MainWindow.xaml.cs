@@ -27,9 +27,7 @@ namespace TimeIsMoney
     /// </summary>
     public partial class MainWindow : Window
     {
-        
-
-        // TimeZone instances we will use in this program
+        // List of TimeZone to be used in this program
         static List<TimeZone> timeZoneList = new List<TimeZone>()
         {
             new TimeZones.AKDT(),
@@ -41,43 +39,52 @@ namespace TimeIsMoney
             new TimeZones.PDT()
         };
         
- 
         // INSTANCE VARIABLES
-        private DateTime utcTime;
-        private DateTime currentTimeZoneTime;
+        static private DateTime utcTime;
+        static private DateTime currentTimeZoneTime;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            // bind the items soure for the data grid
             time_zone_data_grid.ItemsSource = timeZoneList;
+
+            // show the current server
             RefreshCurrentServerText();
         }
 
+        // this method updates the current server to the next one in the list
         private void UpdateCurrentServer()
         {
             Utility.UpdateServerIndex();
             RefreshCurrentServerText();
         }
        
+        // this method refreshes the current serer text block
         private void RefreshCurrentServerText()
         {
             current_server_text_block.Text = Utility.GetCurrentServer();
         }
 
+        // this method updates the connection issue text block
+        // with a proper message
         private void UpdateConnectionIssueTextBlock(string text)
         {
             connection_issue_text_block.Text = text;
         }
 
+        // this method updates the time difference text block
+        // with a proper message
         private void UpdateTimeDifferenceTextBlock(string text)
         {
             time_difference_text_block.Text = text;
         }
 
-        // this method will asynchronously get the time information
-        // from a chosen server, and based on the result, call other functions to update GUI
-        public async Task GetUtcTimeAsync()
+        // this method asynchronously gets the time information
+        // from a chosen server, and based on the result, 
+        // calls other functions to update GUI
+        private async Task GetUtcTimeAsync()
         {
             UpdateTimeDifferenceTextBlock("");
             UpdateConnectionIssueTextBlock("Connecting...");
@@ -97,88 +104,19 @@ namespace TimeIsMoney
 
             Console.WriteLine(utcTime);
 
-            //print time difference
-            PrintTimeDifference();
+            //calculate and print the time difference
+            CalculateTimeDifference();
 
             // fill in the data grid with timezoneList
             CalculateAllTimeZones();
-            //using (var client = new TcpClient())
-            //{
-            //    UpdateConnectionIssueTextBlock("Connecting...");
-
-
-            //    var result = client.BeginConnect(nistServerList[serverIndex], port, null, null);
-
-            //    await Task.Delay(500);
-
-            //    if (!client.Connected)
-            //    {
-            //        throw new ConnectionFailedException($"Connection Failed! <Port: {port}>");
-            //    }
-
-
-
-            //    // await client.ConnectAsync(nistServerList[serverIndex], port);
-
-            //    Console.WriteLine("here");
-            //    using (var stream = client.GetStream())
-            //    using (var ms = new MemoryStream())
-            //    {
-
-            //        int BufferSize = client.ReceiveBufferSize;
-            //        var buffer = new byte[BufferSize];
-            //        int read = 0;
-
-            //        while ((read = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-            //        {
-            //            ms.Write(buffer, 0, read);
-            //        }
-
-            //        string response = Encoding.UTF8.GetString(ms.ToArray());
-            //        Console.WriteLine(response);
-
-            //        if (response.Length > 0)
-            //        {
-            //            if (response.StartsWith("Access denied"))
-            //                throw new AccessDeniedException("Too many requests!");
-
-            //            // filter out the time information from the received text
-            //            // received text is in below format:
-            //            // 58788 19-11-01 00:37:14 03 0 0 487.0 UTC(NIST) *
-            //            var utcDateTimeString = response.Substring(7, 17);
-            //            // convert the time string to DateTime
-            //            utcTime = DateTime.ParseExact(
-            //                                        utcDateTimeString,
-            //                                        dateTimeFormatOfNist,
-            //                                        CultureInfo.CreateSpecificCulture("en-US"));
-
-            //            // calculate the time in current time zone
-            //            currentTimeZoneTime = DateTime.ParseExact(
-            //                                                    utcDateTimeString,
-            //                                                    dateTimeFormatOfNist,
-            //                                                    CultureInfo.InvariantCulture,
-            //                                                    DateTimeStyles.AssumeUniversal);
-
-            //            Console.WriteLine(utcTime);
-
-            //            //print time difference
-            //            PrintTimeDifference();
-
-            //            // fill in the data grid with timezoneList
-            //            CalculateAllTimeZones();
-            //        }
-            //        else
-            //        {
-            //            throw new NoResponseException("No response was received from the server!");
-            //        }
-            //    }
-            //}
+           
         }
 
-        // this method will print the time difference between PC and the time server in seconds
-        private void PrintTimeDifference()
+        // this method will calculate and print the time difference 
+        // between PC and the time server in seconds
+        private void CalculateTimeDifference()
         {
-            string message = "";
+            string message;
             var pcTime = DateTime.Now;
             double diff = (pcTime - currentTimeZoneTime).TotalSeconds;
             if (diff < 0)
@@ -188,10 +126,12 @@ namespace TimeIsMoney
             else
                 message = String.Format("PC time and server time are in sync!");
 
+            // print it on the GUI
             UpdateTimeDifferenceTextBlock(message);
         }
-        // This method will use UTC difference information in each time zone and
-        // calculate the current time for them, using the UTC time we received from server
+        // This method uses UTC difference information in each time zone and
+        // calculates the current time for them, 
+        // using the UTC time we received from server
         private void CalculateAllTimeZones()
         {
             foreach (TimeZone tz in timeZoneList)
@@ -204,8 +144,9 @@ namespace TimeIsMoney
             time_zone_data_grid.Items.Refresh();
         }
 
-        // This will run an async method to Get the time information
+        // This method runs an async method to get the time information
         // if there is an error with the connection, 
+        // we will print the exception on a textblock
         private async void collect_button_Click(object sender, RoutedEventArgs e)
         {
             try

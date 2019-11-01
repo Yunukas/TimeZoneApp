@@ -14,8 +14,10 @@ namespace TimeIsMoney
     {
         // name of the timezone
         public string Name { get; }
+
         // the hour difference from the UTC time
         private int utcDifference;
+
         // current time of the timezone
         public string CurrentTime { get; set; }
 
@@ -25,25 +27,9 @@ namespace TimeIsMoney
             utcDifference = utcDiff;
         }
 
-        // GETTER and SETTERS
-        //public string GetName()
-        //{
-        //    return name;
-        //}
-
         public int GetUtcDifference()
         {
             return utcDifference;
         }
-
-        //public string GetCurrentTime()
-        //{
-        //    return currentTime;
-        //}
-
-        //public void SetCurrentTime(string time)
-        //{
-        //    currentTime = time;
-        //}
     }
 }
