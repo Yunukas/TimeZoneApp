@@ -1,24 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Cache;
-using System.Net.Sockets;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace TimeIsMoney
 {
@@ -137,7 +121,7 @@ namespace TimeIsMoney
             foreach (TimeZone tz in timeZoneList)
             {
                 // add UTC time difference for each Time Zone, and format to our needs
-                tz.CurrentTime = utcTime.AddHours(tz.GetUtcDifference()).ToString(Utility.customDateTimeFormat);
+                tz.CurrentTime = utcTime.AddHours(tz.UtcDifference).ToString(Utility.customDateTimeFormat);
             }
    
             // refresh the Data Grid with new time information

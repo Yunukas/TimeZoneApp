@@ -7,29 +7,24 @@ using System.Threading.Tasks;
 namespace TimeIsMoney
 {
     /// <summary>
-    /// This class will be Super class to
-    /// All different timezones we want to create
+    /// This class will be a base class to
+    /// all different timezones we want to create
     /// </summary>
-    abstract class TimeZone
+    abstract class TimeZone : ITimeZone
     {
         // name of the timezone
         public string Name { get; }
 
-        // the hour difference from the UTC time
-        private int utcDifference;
-
         // current time of the timezone
         public string CurrentTime { get; set; }
 
+        // the hour difference from the UTC time
+        public int UtcDifference { get; }
+        
         public TimeZone(string name, int utcDiff)
         {
             Name = name;
-            utcDifference = utcDiff;
-        }
-
-        public int GetUtcDifference()
-        {
-            return utcDifference;
+            UtcDifference = utcDiff;
         }
     }
 }

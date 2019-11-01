@@ -3,12 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TimeIsMoney"
         mc:Ignorable="d"
-        Title="Time Zone App" Height="340" Width="302"
+        Title="Time Zone App" Height="335" Width="345"
         ResizeMode="NoResize">
     <Grid>
+        <DockPanel HorizontalAlignment="Left" Height="26" LastChildFill="False" Margin="0,3,0,0" VerticalAlignment="Top" Width="339" Background="DarkBlue">
+            <TextBlock HorizontalAlignment="Left" Margin="60,4,0,0" TextWrapping="Wrap" Text="Current Server:" VerticalAlignment="Top" Width="89" FontWeight="SemiBold" Foreground="White"/>
+            <TextBlock x:Name="current_server_text_block" HorizontalAlignment="Left" Margin="10,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="127" FontStyle="Italic" Foreground="White"/>
 
+        </DockPanel>
         <DockPanel LastChildFill="True" Margin="0,112,0,-0.5">
             <TextBlock Text="Time Zones in the U.S."
                Background="DarkBlue"
@@ -27,6 +30,7 @@
                         <DataGridTextColumn.HeaderStyle>
                             <Style TargetType="DataGridColumnHeader">
                                 <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
                             </Style>
                         </DataGridTextColumn.HeaderStyle>
                     </DataGridTextColumn>
@@ -34,6 +38,15 @@
                         <DataGridTextColumn.HeaderStyle>
                             <Style TargetType="DataGridColumnHeader">
                                 <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="UTC" Width="35"  Binding="{Binding UtcDifference}">
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
                             </Style>
                         </DataGridTextColumn.HeaderStyle>
                     </DataGridTextColumn>
@@ -42,10 +55,9 @@
             </DataGrid>
         </DockPanel>
         <TextBlock x:Name="time_difference_text_block" HorizontalAlignment="Left" Margin="10,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="Auto" FontWeight="Bold"/>
-        <Button x:Name="collect_button" Content="Get Time" HorizontalAlignment="Left" Margin="10,29,0,0" VerticalAlignment="Top" Width="75" Click="collect_button_Click" Foreground="White" Background="#FFD64414" FontWeight="Bold"/>
+        <Button x:Name="collect_button" Content="Get Time" HorizontalAlignment="Left" Margin="3,32,0,0" VerticalAlignment="Top" Width="75" Click="collect_button_Click" Foreground="White" Background="#FFD64414" FontWeight="SemiBold"/>
         <TextBlock HorizontalAlignment="Left" Margin="92,33,0,0" TextWrapping="Wrap" Text="(Press the button to collect time zone data)" VerticalAlignment="Top" FontSize="10"/>
-        <TextBlock x:Name="connection_issue_text_block" HorizontalAlignment="Left" Foreground="#FFC12828" Margin="11,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="10"/>
-        <TextBlock HorizontalAlignment="Left" Margin="13,6,0,0" TextWrapping="Wrap" Text="Current Server:" VerticalAlignment="Top" Width="89" FontWeight="Bold"/>
-        <TextBlock x:Name="current_server_text_block" HorizontalAlignment="Left" Margin="128,6,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="127" FontStyle="Italic"/>
+        <TextBlock x:Name="connection_issue_text_block" HorizontalAlignment="Left" Foreground="#FFC12828" Margin="5,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="10"/>
+        
     </Grid>
 </Window>

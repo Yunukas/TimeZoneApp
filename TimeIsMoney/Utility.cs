@@ -64,7 +64,8 @@ namespace TimeIsMoney
                 {
                     ms.Write(buffer, 0, read);
                 }
-
+                // close the TCP connection
+                client.Close();
                 string response = Encoding.UTF8.GetString(ms.ToArray());
                 Console.WriteLine(response);
 
